@@ -28,7 +28,9 @@ MindFace主要具有以下优点:
 </details>
 
 ### 基准结果
+
 #### 识别任务
+
 基于MindSpore实现的ArcFace系列模型取得了良好性能。我们基于ResNet、MobileNet和vit实现了三个版本，以满足不同的需求。详细结果如下表所示。
 
 | 数据集       | 主干网络            | lfw         | cfp_fp      | agedb_30    | calfw | cplfw |
@@ -49,6 +51,7 @@ MindFace主要具有以下优点:
 | MS1MV2         | vit-l | 0.99750+-0.00291 | 0.93714+-0.01498 | 0.96483+-0.01031 | 0.95817+-0.01158 | 0.90450+-0.01062 |
 
 #### 检测任务
+
 对于检测任务，我们选取了Resnet50和Mobilenet0.25作为主干网络，Retinaface作为模型架构，以实现良好的人脸检测性能。详细结果如下表所示。
 
 | 数据集 | 主干网络 | 简单 | 中等 | 困难 |
@@ -59,40 +62,125 @@ MindFace主要具有以下优点:
 
 ## 安装
 
-### 依赖包
+### MindSpore GPU版本的安装
 
-- mindspore_gpu==1.8.1
-- numpy==1.21.6
-- opencv_python==4.6.0.66
-- scipy==1.7.3
-- pyyaml>=5.3
-- scikit-learn==1.1.2
-- Pillow==9.2.0
-- matplotlib==3.6.0
+#### （1）使用安装脚本
 
-请运行下示指令以安装所需依赖包
+在使用安装脚本之前，需要确保系统正确安装了NVIDIA GPU驱动。CUDA 10.1要求最低显卡驱动版本为418.39；CUDA 11.1要求最低显卡驱动版本为450.80.02。
+
+使用以下命令获取自动安装脚本并执行。自动安装脚本仅支持安装MindSpore>=1.6.0。
+
 ```shell
-pip install -r requirements.txt
+wget https://gitee.com/mindspore/mindspore/raw/r1.8/scripts/install/ubuntu-gpu-pip.sh
+# 安装MindSpore 1.8.1，Python 3.7和CUDA 11.1。
+MINDSPORE_VERSION=1.8.1 bash -i ./ubuntu-gpu-pip.sh
+# 如需指定安装Python 3.9，CUDA 10.1以及MindSpore 1.6.0，使用以下方式
+# PYTHON_VERSION=3.9 CUDA_VERSION=10.1 MINDSPORE_VERSION=1.6.0 bash -i ./ubuntu-gpu-pip.sh
 ```
 
-参见MindSpore官网[安装教程](https://www.mindspore.cn/install)，我们可以便捷地完成框架安装。为了能够分布式运行程序，我们还需安装[openmpi](https://www.open-mpi.org/software/ompi/v4.0/) 。
+该脚本会执行以下操作：
 
-### 利用源进行安装
-利用源安装MindFace，请运行：
+- 更改软件源配置为华为云源。
+- 安装MindSpore所需的依赖，如GCC，gmp。
+- 通过APT安装Python3和pip3，并设为默认。
+- 下载CUDA和cuDNN并安装。
+- 通过pip安装MindSpore GPU版本。
+- 如果OPENMPI设置为on，则安装Open MPI。
+- 自动安装脚本执行完成后，需要重新打开终端窗口以使环境变量生效。
+
+#### （2）手动下载
+
+如果系统已经安装了部分依赖，如CUDA，Python，GCC等，也可以通过手动下载的方式。参考[版本列表](https://www.mindspore.cn/versions)选择想要安装的MindSpore版本，并进行SHA-256完整性校验。以1.8.1版本为例，执行以下命令。
+
 ```shell
-# Clone the MindFace repository.
-git clone https://github.com/mindspore-lab/mindface.git
-cd mindface
-
-# Install
-python setup.py install
+export MS_VERSION=1.8.1
 ```
 
+然后根据CUDA版本及Python版本执行如下命令安装最新版本的MindSpore。
+
+```shell
+# CUDA10.1 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA10.1 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA10.1 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+在联网状态下，安装MindSpore时会自动下载MindSpore安装包的依赖项（依赖项详情参见setup.py中的required_package）；运行模型时，需要根据requirements.txt安装额外依赖。
+
+### MindSpore Ascend 910版本的安装
+
+#### （1）使用安装脚本
+
+在使用安装脚本之前，需要确保系统正确安装了[昇腾AI处理器配套软件包](https://gitee.com/mindspore/docs/blob/r1.8/install/mindspore_ascend_install_pip.md#%E5%AE%89%E8%A3%85%E6%98%87%E8%85%BEai%E5%A4%84%E7%90%86%E5%99%A8%E9%85%8D%E5%A5%97%E8%BD%AF%E4%BB%B6%E5%8C%85)，使用以下命令获取自动安装脚本并执行。自动安装脚本仅支持安装MindSpore>=1.6.0。
+
+```shell
+wget https://gitee.com/mindspore/mindspore/raw/r1.8/scripts/install/euleros-ascend-pip.sh
+# 安装MindSpore 1.8.1和Python 3.7
+# 默认LOCAL_ASCEND路径为/usr/local/Ascend
+MINDSPORE_VERSION=1.8.1 bash -i ./euleros-ascend-pip.sh
+# 如需指定Python和MindSpore版本，以Python 3.9和MindSpore 1.6.0为例
+# 且指定LOCAL_ASCEND路径为/home/xxx/Ascend，使用以下方式
+# LOCAL_ASCEND=/home/xxx/Ascend PYTHON_VERSION=3.9 MINDSPORE_VERSION=1.6.0 bash -i ./euleros-ascend-pip.sh
+```
+
+该脚本会执行以下操作：
+
+- 安装MindSpore所需的依赖，如GCC，gmp。
+- 通过APT安装Python3和pip3，并设为默认。
+- 通过pip安装MindSpore Ascend版本。
+- 如果OPENMPI设置为`on`，则安装Open MPI。
+在脚本执行完成后，需要重新打开终端窗口以使环境变量生效。
+
+自动安装脚本会为MindSpore创建名为`mindspore_pyXX`的虚拟环境。其中`XX`为Python版本，如Python 3.7则虚拟环境名为mindspore_py37。执行以下命令查看所有虚拟环境。
+
+```shell
+conda env list
+```
+
+以Python 3.7为例，执行以下命令激活虚拟环境。
+
+```shell
+conda activate mindspore_py37
+```
+
+#### （2）手动下载
+
+如果系统是Ubuntu 18.04/CentOS 7.6/OpenEuler 20.03/KylinV10 SP1其中之一，或者已经安装了部分依赖，如Python，GCC等，也可以通过手动下载的方式。参考[版本列表](https://www.mindspore.cn/versions)选择想要安装的MindSpore版本，并进行SHA-256完整性校验。以1.8.1版本为例，执行以下命令。
+
+```shell
+export MS_VERSION=1.8.1
+```
+
+然后根据系统架构及Python版本执行如下命令安装MindSpore。
+
+```shell
+# x86_64 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# x86_64 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# x86_64 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp37-cp37m-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp38-cp38-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp39-cp39-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+在联网状态下，安装whl包时会自动下载MindSpore安装包的依赖项（依赖项详情参见setup.py中的required_package）；运行模型时，需要根据requirements.txt安装额外依赖。
 
 ## 快速入门
 
 为了快速入门MindFace，请点击[检测教程](tutorials/detection/get_started_CN.md)和[识别教程](tutorials/recognition/get_started.md)，仔细阅读文档，其中将会对Mindface中的每个关键组件和训练、验证、预测进行快速介绍。
-
 
 ## 教程
 
@@ -162,9 +250,7 @@ MindFace是一款开源项目，我们欢迎任何贡献和反馈。我们希望
     howpublished = {\url{https://github.com/mindspore-lab/mindface/}},
     year={2022}
 }
-
 ```
-
 
 ## 贡献者
 
@@ -172,7 +258,6 @@ MindFace是一款开源项目，我们欢迎任何贡献和反馈。我们希望
 
 CMIC实验室的研究主题包括多媒体计算、多模态信息感知、认知和合成。 
 目前已在TPAMI、TIP、TMM、TASLP、TCSVT、TCYB、TITS、TOMM、TCDS、NeurIPS、ACL、CVPR、ICCV、MM、ICLR、SIGGRAPH、VR、AAAI、IJCAI上发表了200多篇期刊文章和会议论文，收获了包括CVPR、MAVOC、ICCV MFR、ICME、FG在内的6项顶级会议的最佳论文奖。CMIC实验室也从包括CVPR、ICCV、MM、ECCV、AAAI、ICME在内的顶级会议上获得了24项大奖。
-
 
 **主要贡献者:**
 

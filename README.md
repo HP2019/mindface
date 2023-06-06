@@ -21,7 +21,9 @@ MindFace mainly has the following features.
 </details>
 
 ### Benchmark Results
+
 #### Recognition
+
 The MindSpore implementation of ArcFace and has achieved great performance. We implemented three versions based on ResNet and MobileNet to meet different needs. Detailed results are shown in the table below.
 
 | Datasets       | Backbone            | lfw         | cfp_fp      | agedb_30    | calfw | cplfw |
@@ -34,6 +36,7 @@ The MindSpore implementation of ArcFace and has achieved great performance. We i
 | MS1MV2         | r100 | 0.99383+-0.00334 | 0.96800+-0.01042 | 0.93767+-0.01724 | 0.93267+-0.01327 | 0.89150+-0.01763 |
 
 #### Detection
+
 For face detection, we choose resnet50 and mobilenet0.25 as the backbone, retinaface as the model architecture to achieve efficient performance of face detection. Detailed results are shown in the table below.
 
 | Dataset | Backbone | Easy | Middle | Hard |
@@ -44,50 +47,135 @@ For face detection, we choose resnet50 and mobilenet0.25 as the backbone, retina
 
 ## Installation
 
-### Dependency
+### Installing MindSpore in GPU
 
-- mindspore_gpu==1.8.1
-- numpy==1.21.6
-- opencv_python==4.6.0.66
-- scipy==1.7.3
-- pyyaml>=5.3
-- scikit-learn==1.1.2
-- Pillow==9.2.0
-- matplotlib==3.6.0
-- easydict==1.9
+#### (1) Automatic Installation
 
-To install the dependency, please run
+Before using the automatic installation script, you need to make sure that the NVIDIA GPU driver is correctly installed on the system. The minimum required GPU driver version of CUDA 10.1 is 418.39. The minimum required GPU driver version of CUDA 11.1 is 450.80.02.
+
+Run the following command to obtain and run the automatic installation script. The automatic installation script only supports the installation of MindSpore>=1.6.0.
+
 ```shell
-pip install -r requirements.txt
+wget https://gitee.com/mindspore/mindspore/raw/r1.8/scripts/install/ubuntu-gpu-pip.sh
+# install MindSpore 1.8.1, Python 3.7 and CUDA 11.1
+MINDSPORE_VERSION=1.8.1 bash -i ./ubuntu-gpu-pip.sh
+# to specify Python and MindSpore version, taking Python 3.9 and MindSpore 1.6.0 as examples, use the following manners
+# PYTHON_VERSION=3.9 CUDA_VERSION=10.1 MINDSPORE_VERSION=1.6.0 bash -i ./ubuntu-gpu-pip.sh
 ```
 
-MindSpore can be easily installed by following the official [instruction](https://www.mindspore.cn/install) where you can select your hardware platform for the best fit. To run in distributed mode, [openmpi](https://www.open-mpi.org/software/ompi/v4.0/) is required to install.   
+This script performs the following operations:
 
+- Change the software source configuration to a HUAWEI CLOUD source.
+- Install the dependencies required by MindSpore, such as GCC and gmp.
+- Install Python3 and pip3 via APT and set them as default.
+- Download and install CUDA and cuDNN.
+- Install MindSpore GPU by pip.
+- Install Open MPI if OPENMPI is set to `on`.
 
+#### (2) Manual Installation
 
-### Install with pip
-MindFace can be installed with pip. 
+If some dependencies, such as CUDA, Python and GCC, have been installed in your system, it is recommended to install manually. First, refer to [Version List](https://www.mindspore.cn/versions) to select the version of MindSpore you want to install, and perform SHA-256 integrity check. Taking version 1.8.1 as an example, execute the following commands.
+
 ```shell
-pip install mindface
+export MS_VERSION=1.8.1
 ```
 
-### Install from source
-To install MindFace from source, please run,
-```shell
-# Clone the MindFace repository.
-git clone https://github.com/mindspore-lab/mindface.git
-cd mindface
+Then install the latest version of MindSpore according to the CUDA version and Python version by following the following command.
 
-# Install
-python setup.py install
+```shell
+# CUDA10.1 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA10.1 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA10.1 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-10.1/mindspore_gpu-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# CUDA11.1 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/gpu/x86_64/cuda-11.1/mindspore_gpu-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+When the network is connected, dependency items are automatically downloaded during MindSpore installation (For details about the dependency, see required_package in `setup.py`.) .
+
+When running models, you need to install additional dependencies based on `requirements.txt`.
+
+### Installing MindSpore in Ascend 910
+
+#### (1) Automatic Installation
+
+Before running the automatic installation script, you need to make sure that the [Ascend AI processor software package](https://gitee.com/mindspore/docs/blob/r1.8/install/mindspore_ascend_install_pip.md#%E5%AE%89%E8%A3%85%E6%98%87%E8%85%BEai%E5%A4%84%E7%90%86%E5%99%A8%E9%85%8D%E5%A5%97%E8%BD%AF%E4%BB%B6%E5%8C%85) is correctly installed on your system. Run the following command to obtain and run the automatic installation script. The automatic installation script only supports the installation of MindSpore>=1.6.0.
+
+```shell
+wget https://gitee.com/mindspore/mindspore/raw/r1.8/scripts/install/euleros-ascend-pip.sh
+# install MindSpore 1.8.1 and Python 3.7
+# the default value of LOCAL_ASCEND is /usr/local/Ascend
+MINDSPORE_VERSION=1.8.1 bash -i ./euleros-ascend-pip.sh
+# to specify Python and MindSpore version, taking Python 3.9 and MindSpore 1.6.0 as examples
+# and set LOCAL_ASCEND to /home/xxx/Ascend, use the following manners
+# LOCAL_ASCEND=/home/xxx/Ascend PYTHON_VERSION=3.9 MINDSPORE_VERSION=1.6.0 bash -i ./euleros-ascend-pip.sh
+```
+
+This script performs the following operations:
+
+- Install the dependencies required by MindSpore, such as GCC and gmp.
+- Install Python3 and pip3 and set them as default.
+- Install MindSpore Ascend by pip.
+- Install Open MPI if OPENMPI is set to `on`.
+
+The automatic installation script creates a virtual environment named `mindspore_pyXX` for MindSpore. Where `XX` is the Python version, such as Python 3.7, the virtual environment name is `mindspore_py37`. Run the following command to show all virtual environments.
+
+```shell
+conda env list
+```
+
+To activate the virtual environment, take Python 3.7 as an example, execute the following command.
+
+```shell
+conda activate mindspore_py37
+```
+
+#### （2）Manual Installation
+
+If your system is one of Ubuntu 18.04/CentOS 7.6/OpenEuler 20.03/KylinV10 SP1, or some dependencies, such as Python and GCC, have been installed in your system, it is recommended to install manually. First, refer to [Version List](https://www.mindspore.cn/versions) to select the version of MindSpore you want to install, and perform SHA-256 integrity check. Taking version 1.8.1 as an example, execute the following commands.
+
+```shell
+export MS_VERSION=1.8.1
+```
+
+Then run the following commands to install MindSpore according to the system architecture and Python version.
+
+```shell
+# x86_64 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp37-cp37m-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# x86_64 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp38-cp38-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# x86_64 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/x86_64/mindspore_ascend-${MS_VERSION/-/}-cp39-cp39-linux_x86_64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.7
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp37-cp37m-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.8
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp38-cp38-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+# aarch64 + Python3.9
+pip install https://ms-release.obs.cn-north-4.myhuaweicloud.com/${MS_VERSION}/MindSpore/ascend/aarch64/mindspore_ascend-${MS_VERSION/-/}-cp39-cp39-linux_aarch64.whl --trusted-host ms-release.obs.cn-north-4.myhuaweicloud.com -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+When the network is connected, dependencies of MindSpore are automatically downloaded during the .whl package installation (For details about the dependency, see required_package in `setup.py` ).
+
+When running models, you need to install additional dependencies based on `requirements.txt` .
+
 ## Get Started
+
 - [Recognition get started](tutorials/recognition/get_started.md)
 - [Detection get started]()
+
 ## Tutorials
----
+
 We provide [tutorials](tutorials) for the recognition and detection task.
+
 ### Recognition
+
 - [Get started](tutorials/recognition/get_started.md)
 - [Learn about recognition configs](tutorials/recognition/config.md) 
 - [Learn to reproduce the eval result and inference with a pretrained model](tutorials/recognition/inference.md) 
@@ -97,45 +185,33 @@ We provide [tutorials](tutorials) for the recognition and detection task.
 - [Learn about how to create model and custom model](tutorials/recognition/model.md)
 
 ### Detection
+
 - [Learn about detection configs](tutorials/detection/config.md)  
 - [Inference with a pretrained detection model](tutorials/detection/infer.md) 
 - [Finetune a pretrained detection model on WiderFace](tutorials/detection/finetune.md)
 
----
+## Supported Models
 
+Currently, MindFace supports the following models. More models with pre-trained weights are under development and will be released in the near future.
 
-### Supported Models
+<details>
+<summary>Supported Models</summary>
 
-#### Recognition
----
-The mindspore implementation of ArcFace has achieved great performance. We implemented three versions based on ResNet, MobileNet and vit to meet different needs. Detailed results are shown in the table below.
+- Detection
+  - Resnet50
+  - Mobilenet0.25
+- Recognition
+  - arcface-mobilefacenet-0.45g
+  - arcface-r50
+  - arcface-r100
+  - arcface-vit-t
+  - arcface-vit-s
+  - arcface-vit-b
+  - arcface-vit-l
 
-| Datasets       | Backbone            | lfw         | cfp_fp      | agedb_30    | calfw | cplfw |
-|:---------------|:--------------------|:------------|:------------|:------------|:------------|:------------|
-| CASIA         | mobilefacenet-0.45g | 0.98483+-0.00425 | 0.86843+-0.01838 | 0.90133+-0.02118 | 0.90917+-0.01294 | 0.81217+-0.02232 |
-| CASIA         | r50 | 0.98667+-0.00435 | 0.90357+-0.01300 | 0.91750+-0.02277 | 0.92033+-0.01122 | 0.83667+-0.01719 |
-| CASIA         | r100 | 0.98950+-0.00366 | 0.90943+-0.01300 | 0.91833+-0.01655 | 0.92433+-0.01017 | 0.84967+-0.01904 |
-| CASIA         | vit-t | 0.98400+-0.00704 | 0.83229+-0.01877 | 0.87283+-0.02468 | 0.90667+-0.00934 | 0.80700+-0.01767 |
-| CASIA         | vit-s | 0.98550+-0.00806 | 0.85557+-0.01617 | 0.87850+-0.02194 | 0.91083+-0.00876 | 0.82500+-0.01685 |
-| CASIA         | vit-b | 0.98333+-0.00553 | 0.85829+-0.01836 | 0.87417+-0.01838 | 0.90800+-0.00968 | 0.81400+-0.02236 |
-| CASIA         | vit-l | 0.97600+-0.00898 | 0.84543+-0.01718 | 0.85317+-0.01411 | 0.89733+-0.00910 | 0.79550+-0.01648 |
-| MS1MV2         | mobilefacenet-0.45g| 0.98700+-0.00364 | 0.88214+-0.01493 | 0.90950+-0.02076 | 0.91750+-0.01088 | 0.82633+-0.02014 |
-| MS1MV2         | r50 | 0.99767+-0.00260 | 0.97186+-0.00652 | 0.97783+-0.00869 | 0.96067+-0.01121 | 0.92033+-0.01732 |
-| MS1MV2         | r100 | 0.99383+-0.00334 | 0.96800+-0.01042 | 0.93767+-0.01724 | 0.93267+-0.01327 | 0.89150+-0.01763 |
-| MS1MV2         | vit-t | 0.99717+-0.00279 | 0.92714+-0.01389 | 0.96717+-0.00727 | 0.95600+-0.01198 | 0.89950+-0.01291 |
-| MS1MV2         | vit-s | 0.99767+-0.00260 | 0.95771+-0.01058 | 0.97617+-0.00972 | 0.95800+-0.01142 | 0.91267+-0.01104 |
-| MS1MV2         | vit-b | 0.99817+-0.00252 | 0.94200+-0.01296 | 0.97517+-0.00858 | 0.96000+-0.01179 | 0.90967+-0.01152 |
-| MS1MV2         | vit-l | 0.99750+-0.00291 | 0.93714+-0.01498 | 0.96483+-0.01031 | 0.95817+-0.01158 | 0.90450+-0.01062 |
+</details>
 
-#### Detection
----
-For Face detection, We choose resnet50 and mobilenet0.25 as the backbone, retinaface as the model architecture to achieve efficient performance of face detection. Detailed results are shown in the table below. 
-
-##### WiderFace Val Performance in multiscale When using ResNet50 or mobileNet025 as backbone.
-| backbone | Easy | Medium | Hard |
-|:-|:-:|:-:|:-:|
-| mobileNet0.25 | 91.60% | 89.50% | 82.39% |
-| ResNet50 | 95.81% | 94.89% | 90.10% |
+Please click [here](mindface/detection/configs) to learn more about the detection model，and click [here](mindface/recognition/configs) to learn more about the recognition model.
 
 ## License
 
@@ -160,10 +236,14 @@ If you find *MindFace* useful in your research, please consider citing the follo
 }
 
 ```
----
+
+## Notes
+
+* We have created our official repo about face research based on MindSpore.
+* MindFace supports recognition and detection task.
 
 ## Contributing
----
+
 *MindFace* is mainly maintained by the Cross-Media Intelligent Computing (**CMIC**) Laboratory, University of Science and Technology of China (**USTC**), and cooperated with Huawei Technologies Co., Ltd. 
 
 The research topics of CMIC include multimedia computing, multi-modal information perception, cognition and synthesis. 
@@ -173,10 +253,6 @@ CMIC has published more than 200 journal articles and conference papers, includi
 CMIC has received 6 best paper awards from premier conferences, including CVPR MAVOC, ICCV MFR, ICME, FG. 
 
 CMIC has won 24 Grand Challenge Champion Awards from premier conferences, including CVPR, ICCV, MM, ECCV, AAAI, ICME.
-
-## Notes
-* We have created our official repo about face research based on MindSpore. 
-* MindFace supports recognition and detection task.
 
 **Main contributors:**
 
